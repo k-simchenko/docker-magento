@@ -1,0 +1,73 @@
+version: "3.9"
+services:
+    web:
+        image: nginx:latest
+        ports:
+            - 8083:8080
+            - 80:80
+            - 443:443
+        volumes:
+            - localVolume:/code
+            - ./nginx/conf.d:/etc/nginx/conf.d
+            - ./log/nginx:/var/log/nginx
+            - ./php7.4/php-code:/php-code
+            - ./certs:/certs
+        links:
+            - php7.4
+    php7.4:
+        hostname: localServer
+        build: './php7.4'
+        volumes:
+            - localVolume:/code
+            - ./log/php:/var/log/php
+        ports:
+            - "22:22"
+        links:
+          - mysql
+          - redis
+          - elasticsearch
+          - mailcatcher
+    mailcatcher:
+        image: yappabe/mailcatcher
+        ports:
+            - "1025:1025"
+            - "1080:1080"
+    mysql:
+        image: mysql:8
+        ports:
+            - 3306:3306
+        volumes:
+            - ./mysql/var/lib/mysql:/var/lib/mysql
+        environment:
+        - MYSQL_ROOT_PASSWORD=root
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        container_name: pma
+        links:
+            - mysql
+        environment:
+            PMA_HOST: mysql
+            PMA_PORT: 3306
+            PMA_ARBITRARY: 1
+        restart: always
+        ports:
+            - 8084:80
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.17.10
+        restart: always
+        ports:
+            - 9200:9200
+            - 9300:9300
+        environment:
+            discovery.type: single-node     
+    redis:
+        image: redis:6.2
+        restart: always
+        container_name: redis
+        ports:
+            - 6379:6379
+        environment:
+            TZ: Asia/Shanghai
+volumes:
+    localVolume:
+    postgres-data: {}

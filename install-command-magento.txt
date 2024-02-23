@@ -1,0 +1,18 @@
+bin/magento setup:install \
+--base-url=http://magento.loc \
+--db-host=mysql \
+--db-name=magento \
+--db-user=root \
+--db-password=root \
+--admin-firstname=Firstname \
+--admin-lastname=Lastname \
+--admin-email=admin@gmail.com.com \
+--admin-user=kostya \
+--admin-password=p@ssw0rd \
+--language=en_US \
+--currency=USD \
+--timezone=America/Chicago \
+--use-rewrites=1 \
+--search-engine=elasticsearch7 \
+--elasticsearch-host=elasticsearch \
+--elasticsearch-port=9200
